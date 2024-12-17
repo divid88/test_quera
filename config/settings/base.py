@@ -3,7 +3,7 @@ from pathlib import Path
 from os import getenv, path
 from dotenv import load_dotenv
 from datetime import timedelta
-
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,7 +36,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
-    "django_countries",
+    "corsheaders",
     "phonenumber_field",
     "drf_yasg",
     "djoser",
@@ -51,10 +51,10 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     # "core_apps.issues",
-    # "core_apps.users",
-    # "core_apps.common",
-    # "core_apps.profiles",
-    # "core_apps.ratings",
+    "core_apps.users",
+    "core_apps.common",
+    "core_apps.reading",
+    "core_apps.quera",
     # "core_apps.posts",
     # "core_apps.apartments",
     # "core_apps.reports",
@@ -67,6 +67,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -154,6 +155,7 @@ ADMIN_URL = "secret"
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 STATIC_ROOT = str(BASE_DIR / 'staticfiles')
 
@@ -165,8 +167,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TAGGIT_CASE_INSENSITIVE = True
 
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.CustomUser"
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 if USE_TZ:
     CELERY_TIMEZONE = TIME_ZONE
@@ -196,15 +199,22 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 #         "task": "update_all_reputations",
 #     }
 # }
+AUTH_COOKIE = 'access'
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 100
+AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 48
+AUTH_COOKIE_SECURE = True
+AUTH_COOKIE_HTTP_ONLY = True
+AUTH_COOKIE_PATH = '/'
+AUTH_COOKIE_SAMESITE = 'None'
 
 
-COOKIE_NAME = "access"
-COOKIE_SAMESITE = "Lax"
-COOKIE_PATH = "/"
-COOKIE_HTTPONLY = True
-COOKIE_SECURE = getenv("COOKIE_SECURE", "True") == "True"
 
 REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     # "DEFAULT_AUTHENTICATION_CLASSES": (
     #     "core_apps.common.cookie_auth.CookieAuthentication",
     # ),
@@ -230,7 +240,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": getenv("SIGNING_KEY"),
+    "SIGNING_KEY": "3434hjkl34o4534523412ndfjklLlLKJSDLD",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,

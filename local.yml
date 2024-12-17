@@ -39,7 +39,7 @@ services:
       - tutorial_prod_nw
 
   mailpit:
-    image: docker.io/axllent/mailpit:v1.15
+    image: axllent/mailpit:v1.15
     container_name: estate_prod_mailpit
     ports:
       - "8025:8025"
@@ -58,8 +58,8 @@ services:
     build:
       context: ./client
       dockerfile: ./docker/local/Dockerfile
-    container_name: tutorial_client
-    image: tutorial_client
+    container_name: client
+    image: client
     # ports:
     #   - "3000:3000"
     expose:

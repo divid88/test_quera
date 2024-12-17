@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /media/david/ddd84b1c-eeac-48db-804b-1d865cb4fb33/python/projects/tutorial_python/api/venv
+set -gx VIRTUAL_ENV /media/david/ddd84b1c-eeac-48db-804b-1d865cb4fb331/python/projects/tutorial_python/api/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

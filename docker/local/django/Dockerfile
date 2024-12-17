@@ -1,4 +1,4 @@
-FROM docker.io/python:3.12.2-slim-bookworm as python
+FROM python:3.12.2-slim-bookworm as python
 
 # Stage 1: Build our dependency wheels
 FROM python AS python-build-stage
@@ -31,8 +31,11 @@ WORKDIR ${APP_HOME}
 RUN apt-get update && apt-get install --no-install-recommends -y \  
   sudo git bash-completion nano ssh
 
-RUN addgroup --system django && \
-  adduser --system --ingroup django django
+# RUN addgroup --system django && \
+#   adduser --system --ingroup django django &&\
+#   mkdir -p ${APP_HOME}/staticfiles && \
+#   chmod -R 755 /app/staticfiles/ &&\
+#   chown -R django:django /app/staticfiles/
  
 
 
@@ -47,32 +50,29 @@ COPY --from=python-build-stage /usr/src/app/wheels /wheels/
 RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
   && rm -rf /wheels/
 
-COPY --chown=django:django ./docker/local/django/entrypoint.sh /entrypoint
+COPY ./docker/local/django/entrypoint.sh /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
-COPY --chown=django:django ./docker/local/django/start.sh /start
+COPY ./docker/local/django/start.sh /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-COPY --chown=django:django ./docker/local/django/celery/worker/start.sh /start-celeryworker
+COPY ./docker/local/django/celery/worker/start.sh /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
 
-COPY --chown=django:django ./docker/local/django/celery/beat/start.sh /start-celerybeat
+COPY ./docker/local/django/celery/beat/start.sh /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
 
-COPY --chown=django:django ./docker/local/django/celery/flower/start.sh /start-flower
+COPY ./docker/local/django/celery/flower/start.sh /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
 
-COPY --chown=django:django . ${APP_HOME}
+COPY . ${APP_HOME}
 
-RUN chown django:django ${APP_HOME}
-
-USER django
 
 ENTRYPOINT [ "/entrypoint" ]
 

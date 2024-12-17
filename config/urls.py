@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -27,4 +27,8 @@ urlpatterns = [
     ),
 
     path("supersecret/", admin.site.urls),
+
+    path('api/v1/users/', include('core_apps.users.urls')),
+    path('api/v1/subjects/', include('core_apps.reading.urls')),
+     path('api/v1/query/', include('core_apps.quera.urls')),
 ]

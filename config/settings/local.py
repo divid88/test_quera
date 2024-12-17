@@ -17,10 +17,21 @@ SITE_NAME = getenv("SITE_NAME")
 SECRET_KEY = getenv(
     "DJANGO_SECRET_KEY", "UUc-qwrxzkZFyx4mrxXFfgHpA1VLOIuAojmk8T9q7n35A6-k-yM"
 )
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8080", 
+                        "http://localhost:8080",
+                  
+                        ]
+CSRF_ALLOWED_ORIGINS = ["http://localhost:8080", 
+                        "http://127.0.0.1:8080",
+                       ]
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+CORS_ORIGINS_WHITELIST = ["http://127.0.0.1:8080"]
 
+CSRF_COOKIE_SECURE = False
+
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "nginx"]
+CORS_ALLOW_ALL_ORIGINS = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
